@@ -3,13 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_admin
+    container_name: admin-app
     ports:
-      - "9010:8000"
+      - "9010:80"
     env_file:
       - .env
     volumes:
       - ./:/var/www/html
+    user: "root"
     depends_on:
       db:
         condition: service_healthy
@@ -21,13 +22,13 @@ services:
     # command: php -S 0.0.0.0:8000 --port=8000
   db:
     image: mysql:8.0
-    container_name: mysql_db_admin
+    container_name: admin-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: admin
+      MYSQL_DATABASE: flixplay
     ports:
-      - "33012:3306"
+      - "33040:3306"
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql_data:/var/lib/mysql
@@ -42,7 +43,7 @@ services:
     container_name: phpmyadmin_admin
     restart: always
     ports:
-      - "8087:80"
+      - "8020:80"
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
@@ -54,7 +55,7 @@ services:
     image: redis:7
     container_name: redis_server_admin
     ports:
-      - "6382:6379"
+      - "6400:6379"
     restart: unless-stopped
 
 volumes:
