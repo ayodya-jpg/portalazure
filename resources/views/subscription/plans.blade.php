@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="max-width: 1200px; margin: 100px auto; padding: 40px;">
-
+    
     <h1 style="text-align: center; background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 50px;">Pilih Paket Subscription Anda</h1>
 
     @if (session('error'))
@@ -16,7 +16,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
         @foreach($plans as $plan)
             <div style="background: linear-gradient(135deg, #1a1a3e, #0f1a2e); border-radius: 12px; padding: 30px; border: 2px solid rgba(233, 75, 60, 0.2); transition: all 0.3s; position: relative;">
-
+                
                 <!-- Plan Name -->
                 <h2 style="background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; font-size: 24px;">{{ $plan->name }}</h2>
 

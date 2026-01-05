@@ -12,10 +12,7 @@ class AdminFilmController extends Controller
 {
     public function index()
     {
-        $films = Film::with('genre')
-            ->latest()
-            ->paginate(15);
-
+        $films = Film::with('genre')->latest()->paginate(15);
         return view('admin.films.index', compact('films'));
     }
 
@@ -34,37 +31,46 @@ class AdminFilmController extends Controller
             'release_year'  => 'required|integer|min:1900|max:' . date('Y'),
             'duration'      => 'required|integer|min:1|max:600',
             'director'      => 'required|string|max:255',
-            'poster_url'    => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'backdrop_url'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'poster_url'    => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'backdrop_url'  => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'video_url'     => 'nullable|url',
             'rating'        => 'nullable|numeric|min:0|max:10',
             'status'        => 'required|in:draft,published,archived',
         ]);
 
-        // ✅ Upload poster
+        // // 🔥 UPLOAD POSTER KE AZURE
+        // $posterPath = $request->file('poster_url')->store('posters', 'azure');
+        // $validated['poster_url'] = Storage::disk('azure')->url($posterPath);
+
+        // // 🔥 UPLOAD BACKDROP KE AZURE (OPSIONAL)
+        // if ($request->hasFile('backdrop_url')) {
+        //     $backdropPath = $request->file('backdrop_url')->store('backdrops', 'azure');
+        //     $validated['backdrop_url'] = Storage::disk('azure')->url($backdropPath);
+        // }
+
+         // ✅ Handle poster upload
         if ($request->hasFile('poster_url')) {
-            $validated['poster_url'] = $request
-                ->file('poster_url')
-                ->store('posters', 'public');
+            $file = $request->file('poster_url');
+            $path = $file->store('posters', 'public');
+            $validated['poster_url'] = '/storage/' . $path;
         }
 
-        // ✅ Upload backdrop
+        // ✅ Handle backdrop upload (NEW)
         if ($request->hasFile('backdrop_url')) {
-            $validated['backdrop_url'] = $request
-                ->file('backdrop_url')
-                ->store('backdrops', 'public');
+            $file = $request->file('backdrop_url');
+            $path = $file->store('backdrops', 'public');
+            $validated['backdrop_url'] = '/storage/' . $path;
         }
 
-        // ✅ Checkbox flags
-        $validated['is_featured'] = $request->has('is_featured');
-        $validated['is_trending'] = $request->has('is_trending');
-        $validated['is_popular']  = $request->has('is_popular');
-        $validated['is_hero']     = $request->has('is_hero');
+        // ✅ CHECKBOX FLAGS
+        $validated['is_featured'] = $request->boolean('is_featured');
+        $validated['is_trending'] = $request->boolean('is_trending');
+        $validated['is_popular']  = $request->boolean('is_popular');
+        $validated['is_hero']     = $request->boolean('is_hero');
 
         Film::create($validated);
 
-        return redirect()
-            ->route('admin.films.index')
+        return redirect()->route('admin.films.index')
             ->with('success', 'Film berhasil ditambahkan');
     }
 
@@ -80,66 +86,104 @@ class AdminFilmController extends Controller
             'title'         => 'required|string|max:255|min:3',
             'description'   => 'required|string|min:10',
             'genre_id'      => 'required|exists:genres,id',
-            'release_year'  => 'required|integer|min:1900|max:' . date('Y'),
             'duration'      => 'required|integer|min:1|max:600',
+            'release_year'  => 'required|integer|min:1900|max:' . date('Y'),
             'director'      => 'required|string|max:255',
-            'poster_url'    => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'backdrop_url'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'poster_url'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'backdrop_url'  => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'video_url'     => 'nullable|url',
             'rating'        => 'nullable|numeric|min:0|max:10',
             'status'        => 'required|in:draft,published,archived',
         ]);
 
-        // ✅ Update poster
+        // ✅ Handle poster upload
         if ($request->hasFile('poster_url')) {
-            if ($film->poster_url) {
-                Storage::disk('public')->delete($film->poster_url);
+            if ($film->poster_url && file_exists(public_path($film->poster_url))) {
+                unlink(public_path($film->poster_url));
             }
 
-            $validated['poster_url'] = $request
-                ->file('poster_url')
-                ->store('posters', 'public');
+            $file = $request->file('poster_url');
+            $path = $file->store('posters', 'public');
+            $validated['poster_url'] = '/storage/' . $path;
+        } else {
+            unset($validated['poster_url']);
         }
 
-        // ✅ Update backdrop
-        if ($request->hasFile('backdrop_url')) {
-            if ($film->backdrop_url) {
-                Storage::disk('public')->delete($film->backdrop_url);
-            }
 
-            $validated['backdrop_url'] = $request
-                ->file('backdrop_url')
-                ->store('backdrops', 'public');
-        }
+        // // 🔁 UPDATE POSTER (HAPUS YANG LAMA DI AZURE)
+        // if ($request->hasFile('poster_url')) {
+        //     if ($film->poster_url) {
+        //         $this->deleteAzureFile($film->poster_url);
+        //     }
 
-        // ✅ Checkbox flags
-        $validated['is_featured'] = $request->has('is_featured');
-        $validated['is_trending'] = $request->has('is_trending');
-        $validated['is_popular']  = $request->has('is_popular');
-        $validated['is_hero']     = $request->has('is_hero');
+        //     $posterPath = $request->file('poster_url')->store('posters', 'azure');
+        //     $validated['poster_url'] = Storage::disk('azure')->url($posterPath);
+        // }
+
+        // // 🔁 UPDATE BACKDROP
+        // if ($request->hasFile('backdrop_url')) {
+        //     if ($film->backdrop_url) {
+        //         $this->deleteAzureFile($film->backdrop_url);
+        //     }
+
+        //     $backdropPath = $request->file('backdrop_url')->store('backdrops', 'azure');
+        //     $validated['backdrop_url'] = Storage::disk('azure')->url($backdropPath);
+        // }
+
+        // ✅ CHECKBOX FLAGS
+        $validated['is_featured'] = $request->boolean('is_featured');
+        $validated['is_trending'] = $request->boolean('is_trending');
+        $validated['is_popular']  = $request->boolean('is_popular');
+        $validated['is_hero']     = $request->boolean('is_hero');
 
         $film->update($validated);
 
-        return redirect()
-            ->route('admin.films.index')
+        return redirect()->route('admin.films.index')
             ->with('success', 'Film berhasil diperbarui');
     }
 
+    // public function destroy(Film $film)
+    // {
+    //     // 🗑️ HAPUS FILE DI AZURE
+    //     if ($film->poster_url) {
+    //         $this->deleteAzureFile($film->poster_url);
+    //     }
+
+    //     if ($film->backdrop_url) {
+    //         $this->deleteAzureFile($film->backdrop_url);
+    //     }
+
+    //     $film->delete();
+
+    //     return redirect()->route('admin.films.index')
+    //         ->with('success', 'Film berhasil dihapus');
+    // }
+
+    /**
+     * 🧹 Helper hapus file Azure dari URL
+     */
+
     public function destroy(Film $film)
     {
-        // ✅ Delete files safely
-        if ($film->poster_url) {
-            Storage::disk('public')->delete($film->poster_url);
-        }
-
-        if ($film->backdrop_url) {
-            Storage::disk('public')->delete($film->backdrop_url);
+        // ✅ Hapus file poster saat hapus film
+        if ($film->poster_url && file_exists(public_path($film->poster_url))) {
+            unlink(public_path($film->poster_url));
         }
 
         $film->delete();
 
-        return redirect()
-            ->route('admin.films.index')
+        return redirect()->route('admin.films.index')
             ->with('success', 'Film berhasil dihapus');
     }
+
+    // private function deleteAzureFile(string $url): void
+    // {
+    //     $container = config('filesystems.disks.azure.container');
+    //     $path = parse_url($url, PHP_URL_PATH);
+
+    //     if ($path) {
+    //         $blobPath = ltrim(str_replace("/{$container}/", '', $path), '/');
+    //         Storage::disk('azure')->delete($blobPath);
+    //     }
+    // }
 }

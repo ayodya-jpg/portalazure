@@ -11,8 +11,9 @@ class DatabaseSeeder extends Seeder
         // Urutan penting! Genre harus dibuat duluan karena Film mereferensikan Genre
         $this->call([
             GenreSeeder::class,
-            UserSeeder::class,
             FilmSeeder::class,
+            UserSeeder::class,
+            SubscriptionPlanSeeder::class,
         ]);
     }
 }

@@ -4,12 +4,12 @@
 
 @section('content')
 <div style="max-width: 600px; margin: 100px auto; padding: 40px; background: linear-gradient(135deg, #1a1a3e, #0f1a2e); border-radius: 12px; border: 1px solid rgba(233, 75, 60, 0.2);">
-
+    
     <h2 style="text-align: center; background: linear-gradient(135deg, #e94b3c, #00d4d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 30px;">Konfirmasi Checkout</h2>
 
     <!-- Order Summary -->
     <div style="background: rgba(0, 212, 212, 0.1); border: 1px solid rgba(0, 212, 212, 0.2); padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-
+        
         <h3 style="color: #00d4d4; margin-bottom: 15px;">Ringkasan Pesanan</h3>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(233, 75, 60, 0.2);">
@@ -35,7 +35,7 @@
 
     <!-- User Info -->
     <div style="background: rgba(233, 75, 60, 0.1); border: 1px solid rgba(233, 75, 60, 0.2); padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-
+        
         <h3 style="color: #e94b3c; margin-bottom: 15px;">Data Pembeli</h3>
 
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">

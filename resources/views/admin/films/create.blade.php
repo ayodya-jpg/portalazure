@@ -31,7 +31,7 @@
         @error('duration') <span style="color: #e94b3c;">{{ $message }}</span> @enderror
     </div>
     <div class="form-group">
-        <label>Tahun Rilis</label>
+        <label>Tahun Keluar</label>
         <input type="number" name="release_year" value="{{ old('release_year') }}" required>
         @error('release_year') <span style="color: #e94b3c;">{{ $message }}</span> @enderror
     </div>
@@ -72,7 +72,7 @@
         </select>
         @error('status') <span style="color: #e94b3c;">{{ $message }}</span> @enderror
     </div>
-    
+
     <!-- ✅ CHECKBOX: Featured -->
     <div class="form-group">
         <label>
@@ -80,7 +80,7 @@
             Film Pilihan Editor
         </label>
     </div>
-    
+
     <!-- ✅ CHECKBOX: Trending -->
     <div class="form-group">
         <label>
@@ -88,7 +88,7 @@
             Film Trending
         </label>
     </div>
-    
+
     <!-- ✅ CHECKBOX: Popular -->
     <div class="form-group">
         <label>
@@ -106,7 +106,7 @@
             Film ini akan muncul di slider besar di homepage (perlu backdrop image)
         </small>
     </div>
-    
+
     <div style="display: flex; gap: 10px;">
         <button type="submit" class="btn btn-primary">
             💾 Simpan

@@ -60,6 +60,16 @@ return [
             'report' => false,
         ],
 
+        // 👇 KHUSUS UNTUK PACKAGE azure-oss/storage-blob-laravel 👇
+        'azure' => [
+            'driver'    => 'azure-storage-blob', // <--- Perhatikan nama driver ini berbeda!
+            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName='.env('AZURE_STORAGE_NAME').';AccountKey='.env('AZURE_STORAGE_KEY').';EndpointSuffix=core.windows.net',
+            'container' => env('AZURE_STORAGE_CONTAINER'),
+            'prefix'    => null,
+            'throw'     => false,
+        ],
+        // 👆 SAMPAI SINI 👆
+
     ],
 
     /*
