@@ -3,11 +3,11 @@ pipeline {
 
     environment {
         // Konfigurasi ACR Anda
-        REGISTRY_URL = 'containerflix.azurecr.io'
-        IMAGE_NAME   = 'flixplay-admin'
+        REGISTRY_URL = 'flixplay.azurecr.io'
+        IMAGE_NAME   = 'flixplay-portal'
 
         // ID ini nanti kita buat di Dashboard Jenkins
-        DOCKER_CRED_ID = 'containerflix'
+        DOCKER_CRED_ID = 'flixplay'
     }
 
     stages {
